@@ -13,3 +13,9 @@ MonoBehaviour:
   m_Name: Question 1
   m_EditorClassIdentifier: 
   question: Life is either a daring adventure or nothing at all.
+  answers:
+  - Zeno
+  - Helen Keller
+  - Et hoc transibit
+  - Julius caesar
+  correctAnswerIndex: 1
