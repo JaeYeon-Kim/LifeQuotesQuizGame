@@ -7,25 +7,63 @@ using UnityEngine.UI;
 
 public class Quiz : MonoBehaviour
 {
+    [Header("Questions")]
     [SerializeField] TextMeshProUGUI questionText;
     [SerializeField] QuestionSO question;
-    [SerializeField] GameObject[] answerButtons;    // 버튼에 대한 배열 
 
-    // 올바른 정답의 인덱스 참조 변수 
+
+    [Header("Answers")]
+    [SerializeField] GameObject[] answerButtons;    // 버튼에 대한 배열 
     int correctAnswerIndex;
+    bool hasAnsweredEarly;  // 타이머가 다되어 정답을 표시해야 하는것인지 버튼을 클릭했으니 정답을 표시해야하는 것인지
+
+    [Header("Button Colors")]
     [SerializeField] Sprite defaultAnswerSprite;
     [SerializeField] Sprite correctAnswerSprite;
 
+    // 타이머 이미지 연동을 위한 변수들
+    [Header("Timer")]
+    [SerializeField] Image timerImage;
+    Timer timer;
 
 
     void Start()
     {
+        timer = FindObjectOfType<Timer>();
         GetNextQuestion();
         //DisplayQuestion();
     }
 
+    void Update()
+    {
+        timerImage.fillAmount = timer.fillFraction;     // timer이미지의 양을 타이머 분수의 값으로 프레임마다 적용 
+
+        if (timer.loadNextQuestion)
+        {
+            hasAnsweredEarly = false;
+            GetNextQuestion();
+            timer.loadNextQuestion = false;
+        }
+        // 답을 일찍 선택하지 않았을 경우 && 질문에 답변중이지 않을 경우 => 두 조건 충족시 정답을 표시 
+        else if (!hasAnsweredEarly && !timer.isAnsweringQuestion)
+        {
+            DisplayAnswer(-1);      // 정답과 다른 인덱스를 전달해야하므로 보통 -1 대입 
+            SetButtonState(false);
+        }
+    }
+
     // 버튼을 눌렀을때 호출할 메소드 (정답 체크 시)
     public void OnAnswerSelected(int index)
+    {
+        hasAnsweredEarly = true;        // 답변 버튼을 클릭했으면 질문에 일찍 답변한 것
+        DisplayAnswer(index);
+
+        SetButtonState(false);
+        // 답을 선택한 후 타이머를 끊고 다음 상태로 전환 
+        timer.CancelTimer();
+    }
+
+    void DisplayAnswer(int index)
     {
         Image buttonImage;
 
@@ -47,8 +85,6 @@ public class Quiz : MonoBehaviour
             buttonImage = answerButtons[correctAnswerIndex].GetComponent<Image>();
             buttonImage.sprite = correctAnswerSprite;
         }
-
-        SetButtonState(false);
     }
 
     void GetNextQuestion()
