@@ -4,12 +4,16 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class Quiz : MonoBehaviour
 {
     [Header("Questions")]
     [SerializeField] TextMeshProUGUI questionText;
-    [SerializeField] QuestionSO question;
+
+    // 문제 리스트들 (질문 스크립터블 오브젝트를 리스트로 생성)
+    [SerializeField] List<QuestionSO> questions;
+    QuestionSO currentQuestion;
 
 
     [Header("Answers")]
@@ -30,8 +34,6 @@ public class Quiz : MonoBehaviour
     void Start()
     {
         timer = FindObjectOfType<Timer>();
-        GetNextQuestion();
-        //DisplayQuestion();
     }
 
     void Update()
@@ -67,7 +69,7 @@ public class Quiz : MonoBehaviour
     {
         Image buttonImage;
 
-        if (index == question.GetCorrectAnswerIndex())
+        if (index == currentQuestion.GetCorrectAnswerIndex())
         {
             // 정답일때 
             questionText.text = "Correct!";
@@ -78,8 +80,8 @@ public class Quiz : MonoBehaviour
         // 정답이 아닐 경우 
         else
         {
-            correctAnswerIndex = question.GetCorrectAnswerIndex();  // 정답 인덱스 가져오기 
-            string correctAnswer = question.GetAnswer(correctAnswerIndex);
+            correctAnswerIndex = currentQuestion.GetCorrectAnswerIndex();  // 정답 인덱스 가져오기 
+            string correctAnswer = currentQuestion.GetAnswer(correctAnswerIndex);
             questionText.text = "Sorry, the correct answer was;\n" + correctAnswer;
 
             buttonImage = answerButtons[correctAnswerIndex].GetComponent<Image>();
@@ -89,22 +91,45 @@ public class Quiz : MonoBehaviour
 
     void GetNextQuestion()
     {
-        SetButtonState(true);
-        SetDefaultButtonSprites();
-        DisplayQuestion();
+        if (questions.Count > 0)
+        {
+            SetButtonState(true);
+            SetDefaultButtonSprites();
+            GetRandomQuestion();
+            DisplayQuestion();
+        }
+
     }
 
 
+    // 문제를 랜덤으로 생성 
+    private void GetRandomQuestion()
+    {
+        // 목록의 0번 ~ 리스트 마지막 숫자 사이의 임의의 숫자가 반환 
+        int index = Random.Range(0, questions.Count);
+
+        // 현재 문제를 지정 
+        currentQuestion = questions[index];
+
+
+        // 문제 리스트에 뽑은 문제가 존재할 경우에만 제거 
+        if (questions.Contains(currentQuestion))
+        {
+            // 뽑은 문제를 전체 리스트에서 제거 
+            questions.Remove(currentQuestion);
+        }
+    }
+
     private void DisplayQuestion()
     {
-        questionText.text = question.GetQuestion();
+        questionText.text = currentQuestion.GetQuestion();
 
         for (int i = 0; i < answerButtons.Length; i++)
         {
 
             TextMeshProUGUI buttonText = answerButtons[i].GetComponentInChildren<TextMeshProUGUI>();
 
-            buttonText.text = question.GetAnswer(i);
+            buttonText.text = currentQuestion.GetAnswer(i);
         }
     }
 
