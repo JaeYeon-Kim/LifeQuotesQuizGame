@@ -8,14 +8,26 @@ public class Timer : MonoBehaviour
     [SerializeField] private float timeToCompleteQuestion = 30f;
     [SerializeField] private float timeToShowCorrectAnswer = 10f;
 
+    // 다음 문제를 언제 보여줘야할지 연결해주는 변수 
+    public bool loadNextQuestion;
+
+
     // 문제 풀이 시간과 정답 표시 시간 사이 전환을 위한 변수 
     public bool isAnsweringQuestion = false;
+    public float fillFraction;
 
     float timerValue;       // 문제의 남은 시간 변수 
 
     void Update()
     {
         UpdateTimer();
+    }
+
+
+    // 정답일 경우 타이머를 기다리지 않고 즉시 종료하는 메소드 
+    public void CancelTimer()
+    {
+        timerValue = 0;
     }
 
     void UpdateTimer()
@@ -27,22 +39,33 @@ public class Timer : MonoBehaviour
         // 문제를 풀고 있는데 시간이 다 될 경우 정답 표시 상태로 넘어감 
         if (isAnsweringQuestion)
         {
-            if (timerValue <= 0)
+
+            if (timerValue > 0)
+            {
+                fillFraction = timerValue / timeToCompleteQuestion;
+            }
+            else
             {
                 isAnsweringQuestion = false;
                 timerValue = timeToShowCorrectAnswer;
             }
+
         }
         else
         {
-            if (timerValue <= 0)
+
+            if (timerValue > 0)
+            {
+                fillFraction = timerValue / timeToShowCorrectAnswer;
+            }
+            else
             {
                 isAnsweringQuestion = true;
                 timerValue = timeToCompleteQuestion;
+                loadNextQuestion = true;
             }
         }
 
-
-        Debug.Log(timerValue);
+        Debug.Log(isAnsweringQuestion + ": " + timerValue + "=" + fillFraction);
     }
 }
