@@ -14,3 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   question: But I know, somehow, that only when it is dark enough can you see the
     stars.
+  answers:
+  - not
+  - not
+  - not
+  - answer
+  correctAnswerIndex: 3

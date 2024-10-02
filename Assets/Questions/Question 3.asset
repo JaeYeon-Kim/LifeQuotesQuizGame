@@ -13,3 +13,9 @@ MonoBehaviour:
   m_Name: Question 3
   m_EditorClassIdentifier: 
   question: Life is unfair, get used to it.
+  answers:
+  - answer
+  - not
+  - not
+  - not
+  correctAnswerIndex: 0

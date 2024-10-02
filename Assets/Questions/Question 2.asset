@@ -13,3 +13,9 @@ MonoBehaviour:
   m_Name: Question 2
   m_EditorClassIdentifier: 
   question: When you have faults, do not fear to abandon them.
+  answers:
+  - not
+  - answer
+  - not
+  - not
+  correctAnswerIndex: 1

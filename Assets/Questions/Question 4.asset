@@ -13,3 +13,9 @@ MonoBehaviour:
   m_Name: Question 4
   m_EditorClassIdentifier: 
   question: Try not to become a man of success. Rather become a man of value.
+  answers:
+  - not
+  - not
+  - answer
+  - not
+  correctAnswerIndex: 2
